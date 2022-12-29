@@ -1,5 +1,8 @@
 {
     "name": "docker_child_process",
+    "publishConfig": {
+        "access": "public"
+    },
     "version": "1.0.0",
     "description": "",
     "type": "module",
