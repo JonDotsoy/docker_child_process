@@ -16,6 +16,7 @@ jobs:
                   node-version: lts/*
             - run: npm ci
             - run: npm run lint
+            - run: npm audit
             - run: npm test
     release-please:
         name: 🔖 Release Please
