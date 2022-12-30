@@ -17,3 +17,11 @@ jobs:
             - run: npm ci
             - run: npm run lint
             - run: npm test
+    release-please:
+        name: 🔖 Release Please
+        runs-on: ubuntu-latest
+        steps:
+            - uses: google-github-actions/release-please-action@v3
+              with:
+                  release-type: node
+                  package-name: release-please-action
