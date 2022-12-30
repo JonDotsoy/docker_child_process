@@ -20,7 +20,7 @@ const dockerInstance = createInterface();
 await dockerInstance.init();
 
 await dockerInstance.exec(`echo ok`);
-// # Docker: ok
+// ## Docker: ok
 
 const { outputs } = await dockerInstance.exec(`echo "###=> FOO=VAZ"`);
 
