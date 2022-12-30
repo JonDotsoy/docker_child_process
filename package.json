@@ -8,7 +8,8 @@
     "type": "module",
     "main": "docker_child_process.mjs",
     "scripts": {
-        "lint": "prettier -w *",
+        "lint": "prettier -c * .github/*",
+        "lint:write": "prettier -w * .github/*",
         "test": "vitest run"
     },
     "keywords": [
