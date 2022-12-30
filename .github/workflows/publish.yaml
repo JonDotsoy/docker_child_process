@@ -1,0 +1,13 @@
+name: NPM Publish
+on:
+    push:
+        tags:
+            - "v*"
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        name: 🚀 Publish
+        steps:
+            - uses: JS-DevTools/npm-publish@v1
+              with:
+                  token: ${{ secrets.NPM_TOKEN }}
