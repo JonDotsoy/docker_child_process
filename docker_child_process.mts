@@ -1,4 +1,4 @@
-import chalk from "./node_modules/chalk/source/index";
+import chalk from "./node_modules/chalk/source/index.js";
 import { spawn, SpawnOptionsWithoutStdio, spawnSync } from "node:child_process";
 import { subtle, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
