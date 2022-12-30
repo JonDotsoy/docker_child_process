@@ -1,4 +1,3 @@
-import chalk from "./node_modules/chalk/source/index.js";
 import { spawn, SpawnOptionsWithoutStdio, spawnSync } from "node:child_process";
 import { subtle, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
@@ -53,7 +52,7 @@ const createChildProcess = (
 ) => {
     const varLineCaptura = options?.varLineCaptura ?? "###=>";
     const silentLogs = options?.silent ?? false;
-    const labelLogs = options?.label ?? chalk.gray(`## ${cmd}`);
+    const labelLogs = options?.label ?? `## ${cmd}`;
     const childProcess = spawn(cmd, args, options?.spawn);
     const stdoutLines = nodeReadline.createInterface({
         input: childProcess.stdout,
@@ -198,7 +197,7 @@ export const createInterface = (createRunOptions?: CreateRunOptions) => {
             ((exitCode: number | null) => exitCode !== null && exitCode !== 0);
         const args = [`exec`, uid, defaultShell, "-i", "-c", cmd];
 
-        console.log(chalk.gray(`### RUN =>`), cmd);
+        console.log(`### RUN =>`, cmd);
 
         const activity = await docker(args, options);
 
