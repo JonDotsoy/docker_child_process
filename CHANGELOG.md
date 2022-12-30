@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/JonDotsoy/docker-instance/compare/v1.1.1...v1.1.2) (2022-12-30)
+
+
+### Bug Fixes
+
+* import chalk ([b1f14c5](https://github.com/JonDotsoy/docker-instance/commit/b1f14c5d5ffa412d2ade1d698c7b64cb504e1778))
+
 ## [1.1.1](https://github.com/JonDotsoy/docker-instance/compare/v1.1.0...v1.1.1) (2022-12-30)
 
 
