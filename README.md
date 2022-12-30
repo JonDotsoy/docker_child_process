@@ -1,6 +1,6 @@
 # docker_child_process
 
-Simple docker agent to NodeJS to run scripts in a container.
+A simple docker agent at NodeJS to run scripts in a container.
 
 ## Installation
 
