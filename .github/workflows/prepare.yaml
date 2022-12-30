@@ -20,6 +20,7 @@ jobs:
     release-please:
         name: 🔖 Release Please
         runs-on: ubuntu-latest
+        needs: tests
         steps:
             - uses: google-github-actions/release-please-action@v3
               with:
