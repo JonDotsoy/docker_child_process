@@ -6,3 +6,5 @@
 node_modules
 *.tgz
 *.mjs
+*.mjs.map
+*.d.mts

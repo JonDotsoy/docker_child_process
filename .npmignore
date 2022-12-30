@@ -6,3 +6,4 @@ tsconfig.json
 *.tgz
 .editorconfig
 *.mts
+!*.d.mts

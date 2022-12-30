@@ -1,2 +1,5 @@
 CHANGELOG.md
 *.mjs
+*.mjs.map
+*.d.mts
+*.tgz
