@@ -22,8 +22,26 @@ jobs:
         name: 🔖 Release Please
         runs-on: ubuntu-latest
         needs: tests
+        outputs:
+            release_created: ${{ steps.release-please.outputs.release_created }}
         steps:
             - uses: google-github-actions/release-please-action@v3
+              id: release-please
               with:
                   release-type: node
                   package-name: release-please-action
+
+    publish:
+        runs-on: ubuntu-latest
+        name: 🚀 Publish
+        needs: release-please
+        if: ${{ needs.release-please.outputs.release_created }}
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: lts/*
+            - run: npm ci
+            - uses: JS-DevTools/npm-publish@v1
+              with:
+                  token: ${{ secrets.NPM_TOKEN }}
