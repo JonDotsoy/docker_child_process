@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/JonDotsoy/docker-instance/compare/v1.0.4...v1.1.0) (2022-12-30)
+
+
+### Features
+
+* add support to typescript declaration ([5743c3d](https://github.com/JonDotsoy/docker-instance/commit/5743c3de22573bfec859d286e1bf79681de44a7c))
+
 ## [1.0.4](https://github.com/JonDotsoy/docker-instance/compare/v1.0.3...v1.0.4) (2022-12-30)
 
 
