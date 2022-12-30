@@ -1,4 +1,8 @@
 !.github
 !.editorconfig
 !.prettierignore
+!.nvmrc
+!.npmignore
 node_modules
+*.tgz
+*.mjs

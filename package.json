@@ -4,10 +4,14 @@
         "access": "public"
     },
     "version": "1.0.3",
-    "description": "",
+    "description": "Simple docker agent to NodeJS to run scripts in a container.",
     "type": "module",
+    "exports": {
+        "import": "./docker_child_process.mjs"
+    },
     "main": "docker_child_process.mjs",
     "scripts": {
+        "prepare": "tsc",
         "lint": "prettier -c * .github/*",
         "lint:write": "prettier -w * .github/*",
         "test": "vitest run"

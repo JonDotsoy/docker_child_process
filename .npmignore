@@ -1,0 +1,8 @@
+test/
+tsconfig.json
+.github/
+.nvmrc
+.prettierignore
+*.tgz
+.editorconfig
+*.mts
