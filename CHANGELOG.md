@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/JonDotsoy/docker-instance/compare/v1.0.2...v1.0.3) (2022-12-30)
+
+
+### Miscellaneous Chores
+
+* release 1.0.3 ([8f0c371](https://github.com/JonDotsoy/docker-instance/commit/8f0c371e0620843098c37c0aa87eb9ba738163c4))
+
 ## [1.0.2](https://github.com/JonDotsoy/docker-instance/compare/v1.0.1...v1.0.2) (2022-12-30)
 
 
