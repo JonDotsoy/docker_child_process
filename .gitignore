@@ -8,3 +8,4 @@ node_modules
 *.mjs
 *.mjs.map
 *.d.mts
+Dockerfile.hash

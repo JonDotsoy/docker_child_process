@@ -14,7 +14,8 @@
         "prepare": "tsc",
         "lint": "prettier -c * .github/*",
         "lint:write": "prettier -w * .github/*",
-        "test": "vitest run"
+        "test": "vitest run",
+        "clean": "tsc --build --clean"
     },
     "keywords": [
         "docker",

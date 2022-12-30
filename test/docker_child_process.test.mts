@@ -55,4 +55,23 @@ describe("Docker Child Process", () => {
             ).toBeTruthy();
         });
     });
+
+    describe("build image", () => {
+        const dockerInterface = createInterface({
+            build: {
+                imageName: "custom-dockerfile-1234ga43",
+                dockerfile: new URL("Dockerfile", import.meta.url),
+            }
+        });
+        afterAll(async () => {
+            dockerInterface.kill()
+        })
+
+        it("should build imagen by a dockerfile", async () => {
+            await dockerInterface.init()
+            const { outputs } = await dockerInterface.exec(`echo "###=> hi=$(cat /hi.txt)"`)
+
+            expect(outputs).toEqual({ hi: "HI!" })
+        })
+    })
 });
