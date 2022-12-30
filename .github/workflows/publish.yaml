@@ -3,11 +3,20 @@ on:
     push:
         tags:
             - "v*"
+    release:
+        types:
+            - published
+
 jobs:
     publish:
         runs-on: ubuntu-latest
         name: 🚀 Publish
         steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: lts/*
+            - run: npm ci
             - uses: JS-DevTools/npm-publish@v1
               with:
                   token: ${{ secrets.NPM_TOKEN }}
