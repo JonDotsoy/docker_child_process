@@ -1,7 +1,8 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "declaration": true,
-    "sourceMap": true
-  }
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "declaration": true,
+        "sourceMap": true
+    },
+    "exclude": ["rollup.config.ts", "test"]
 }

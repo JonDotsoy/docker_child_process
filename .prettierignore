@@ -4,3 +4,4 @@ CHANGELOG.md
 *.d.mts
 *.tgz
 LICENSE
+rollup.config.*

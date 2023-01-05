@@ -1,10 +1,4 @@
-import {
-    describe,
-    it,
-    beforeAll,
-    afterAll,
-    expect,
-} from "vitest";
+import { describe, it, beforeAll, afterAll, expect } from "vitest";
 import { createInterface } from "../docker_child_process.mjs";
 
 describe("Docker Child Process", () => {
