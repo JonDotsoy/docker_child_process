@@ -6,7 +6,6 @@ import {
     expect,
 } from "../node_modules/vitest/dist/index";
 import { createInterface } from "../docker_child_process.mjs";
-import { after, before } from "node:test";
 
 describe("Docker Child Process", () => {
     it("should create instance of docker", async () => {
@@ -61,17 +60,19 @@ describe("Docker Child Process", () => {
             build: {
                 imageName: "custom-dockerfile-1234ga43",
                 dockerfile: new URL("Dockerfile", import.meta.url),
-            }
+            },
         });
         afterAll(async () => {
-            dockerInterface.kill()
-        })
+            dockerInterface.kill();
+        });
 
         it("should build imagen by a dockerfile", async () => {
-            await dockerInterface.init()
-            const { outputs } = await dockerInterface.exec(`echo "###=> hi=$(cat /hi.txt)"`)
+            await dockerInterface.init();
+            const { outputs } = await dockerInterface.exec(
+                `echo "###=> hi=$(cat /hi.txt)"`
+            );
 
-            expect(outputs).toEqual({ hi: "HI!" })
-        })
-    })
+            expect(outputs).toEqual({ hi: "HI!" });
+        });
+    });
 });

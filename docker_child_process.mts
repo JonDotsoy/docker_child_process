@@ -25,6 +25,7 @@ export interface CreateRunOptions {
         imageName: string;
         dockerfile: URL;
         cwd?: URL;
+        args?: Record<string, string>;
     };
     //   workspace?: URL;
     cwd?: string | URL;
