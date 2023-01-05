@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/JonDotsoy/docker_child_process/compare/v1.2.0...v1.2.1) (2023-01-05)
+
+
+### Bug Fixes
+
+* rewrite file extension ([c5f5d13](https://github.com/JonDotsoy/docker_child_process/commit/c5f5d139a49537846c9639fc21c8857c0dfbf1de))
+
 ## [1.2.0](https://github.com/JonDotsoy/docker_child_process/compare/v1.1.3...v1.2.0) (2023-01-05)
 
 
