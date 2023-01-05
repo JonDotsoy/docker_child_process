@@ -4,7 +4,7 @@ import {
     beforeAll,
     afterAll,
     expect,
-} from "../node_modules/vitest/dist/index";
+} from "vitest";
 import { createInterface } from "../docker_child_process.mjs";
 
 describe("Docker Child Process", () => {

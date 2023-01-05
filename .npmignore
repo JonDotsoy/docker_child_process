@@ -1,5 +1,5 @@
 test/
-tsconfig.json
+tsconfig*.json
 .github/
 .nvmrc
 .prettierignore
@@ -7,3 +7,4 @@ tsconfig.json
 .editorconfig
 *.mts
 !*.d.mts
+rollup.config.*
