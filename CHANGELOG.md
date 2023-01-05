@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/JonDotsoy/docker_child_process/compare/v1.1.3...v1.2.0) (2023-01-05)
+
+
+### Features
+
+* add support require module ([4dd26e1](https://github.com/JonDotsoy/docker_child_process/commit/4dd26e13348f606600ce32a8bae5e294223f9587))
+* add support to build with arguments ([27de7f3](https://github.com/JonDotsoy/docker_child_process/commit/27de7f3be048d841d8c2c93e4458d654dee0eeaa))
+
 ## [1.1.3](https://github.com/JonDotsoy/docker-instance/compare/v1.1.2...v1.1.3) (2022-12-30)
 
 
