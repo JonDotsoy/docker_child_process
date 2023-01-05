@@ -8,3 +8,4 @@ tsconfig*.json
 *.mts
 !*.d.mts
 rollup.config.*
+.husky/

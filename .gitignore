@@ -8,7 +8,7 @@ node_modules
 *.mjs
 *.mjs.map
 *.d.mts
-Dockerfile.hash
+Dockerfile*.hash
 !.husky
 rollup.config.*
 !rollup.config.ts

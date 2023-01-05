@@ -22,10 +22,11 @@ export interface CreateRunOptions {
     nameWorkspace?: string;
     imagen?: string;
     build?: {
-        imageName: string;
+        imageName?: string;
         dockerfile: URL;
         cwd?: URL;
         args?: Record<string, string>;
+        hashFile?: URL;
     };
     //   workspace?: URL;
     cwd?: string | URL;
@@ -91,7 +92,9 @@ const createChildProcess = (
     });
 
     const wait = () =>
-        new Promise((resolve) => childProcess.once("exit", resolve));
+        new Promise<number | null>((resolve) =>
+            childProcess.once("exit", resolve)
+        );
     const kill = (signal?: number | NodeJS.Signals) =>
         childProcess.kill(signal);
 
@@ -129,43 +132,70 @@ export const createInterface = (createRunOptions?: CreateRunOptions) => {
     // const workspace =
     //     createRunOptions?.workspace ?? new URL(`.`, import.meta.url);
     const uid = randomUUID();
-    const baseBuild = createRunOptions?.build;
-    const baseImagen =
-        baseBuild?.imageName ?? createRunOptions?.imagen ?? "ubuntu:latest";
+    const buildOptions = createRunOptions?.build;
+    let image = createRunOptions?.imagen ?? "ubuntu:latest";
 
     const init = async (options?: ChildProcessOptions) => {
-        if (baseBuild) {
-            const dockerfile = baseBuild.dockerfile;
-            const dockerfileHashFile = new URL(
-                `${dockerfile.pathname}.hash`,
-                dockerfile
-            );
-            const previouslyDockerfileHash = existsSync(dockerfileHashFile)
-                ? new Uint8Array(await readFile(dockerfileHashFile))
-                : null;
+        if (buildOptions) {
+            const buildArgs = Object.entries(buildOptions.args ?? {})
+                .map(([key, value]) => [`--build-arg`, `${key}=${value}`])
+                .flat();
+            const dockerfile = buildOptions.dockerfile;
+
             const dockerfileHash = new Uint8Array(
-                await subtle.digest("SHA-1", await readFile(dockerfile))
+                await subtle.digest(
+                    "SHA-1",
+                    new Uint8Array([
+                        ...(await readFile(dockerfile)),
+                        ...new TextEncoder().encode(buildArgs.join(" ")),
+                    ])
+                )
             );
-            const cwd = baseBuild.cwd ?? new URL(".", baseBuild.dockerfile);
+            const dockerfileHashHex = dockerfileHash.reduce(
+                (str, uint) => `${str}${uint.toString(16).padStart(2, "0")}`,
+                ""
+            );
 
-            const dockerfileSame =
-                previouslyDockerfileHash?.every(
-                    (v, i) => v === dockerfileHash[i]
-                ) ?? false;
+            image =
+                buildOptions?.imageName ??
+                `${"docker-child-process"}-${dockerfileHashHex}`;
 
-            if (!dockerfileSame || !existsSync(dockerfileHashFile)) {
-                await docker(
+            const dockerfileHashFile =
+                buildOptions.hashFile ??
+                new URL(`${dockerfile.pathname}.${image}.hash`, dockerfile);
+
+            const alreadyBuilt = existsSync(dockerfileHashFile);
+
+            const cwd =
+                buildOptions.cwd ?? new URL(".", buildOptions.dockerfile);
+
+            if (!alreadyBuilt) {
+                const exitCode = await docker(
                     [
                         `build`,
+                        ...buildArgs,
                         `-t`,
-                        baseBuild.imageName,
+                        image,
                         `-f`,
                         dockerfile.pathname,
                         cwd.pathname,
                     ],
                     options
                 ).wait();
-                await writeFile(dockerfileHashFile, dockerfileHash);
+                if (exitCode !== 0) throw new Error(`Failed build imagen`);
+                await writeFile(
+                    dockerfileHashFile,
+                    JSON.stringify(
+                        {
+                            hash: dockerfileHashHex,
+                            createdAt: new Date(),
+                            args: buildOptions.args,
+                            image,
+                        },
+                        null,
+                        2
+                    )
+                );
             }
         }
 
@@ -179,7 +209,7 @@ export const createInterface = (createRunOptions?: CreateRunOptions) => {
                 `-d`,
                 `--name`,
                 uid,
-                baseImagen,
+                image,
                 defaultShell,
                 "-i",
                 `-c`,
