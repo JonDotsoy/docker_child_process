@@ -8,7 +8,7 @@
     "type": "module",
     "exports": {
         "import": "./docker_child_process.mjs",
-        "require": "./cjs/docker_child_process.js"
+        "require": "./cjs/docker_child_process.cjs"
     },
     "main": "./cjs/docker_child_process.js",
     "types": "./docker_child_process.d.mts",
