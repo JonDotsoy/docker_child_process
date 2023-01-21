@@ -38,12 +38,3 @@ const { outputs } = await dockerInstance.exec(
 
 outputs; // => { lodash:{"name":"lodash","scope":"unscoped","version":"4.17.21","description":"Lodash modular utilities.","keywords":["modules","stdlib","util"],"date":"2021-02-20T15:42:16.891Z","links":{"npm":"https://www.npmjs.com/package/lodash","homepage":"https://lodash.com/","repository":"https://github.com/lodash/lodash","bugs":"https://github.com/lodash/lodash/issues"},"author":{"name":"John-David Dalton","email":"john.david.dalton@gmail.com","username":"jdalton"},"publisher":{"username":"bnjmnt4n","email":"benjamin@dev.ofcr.se"},"maintainers":[{"username":"mathias","email":"mathias@qiwi.be"},{"username":"jdalton","email":"john.david.dalton@gmail.com"},{"username":"bnjmnt4n","email":"benjamin@dev.ofcr.se"}]} }
 ```
-
-## Copy files
-
-To copy a file into the container, it's posible to call the `Instance.prototype.cp()` function.
-
-```ts
-const localFile = new URL("file", import.meta.url);
-await dockerInstance.cp(localFile, "file");
-```

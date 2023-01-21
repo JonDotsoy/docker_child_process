@@ -28,6 +28,7 @@
     "author": "Jonathan Delgado <hi@jon.soy> (https://jon.soy)",
     "license": "MIT",
     "devDependencies": {
+        "@jondotsoy/demo-workspace": "^1.1.3",
         "@rollup/plugin-typescript": "^10.0.1",
         "@types/node": "^18.11.18",
         "husky": "^8.0.3",

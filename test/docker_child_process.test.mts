@@ -1,5 +1,8 @@
 import { describe, it, beforeAll, afterAll, expect } from "vitest";
 import { createInterface } from "../docker_child_process.mjs";
+import { demoWorkspace } from "@jondotsoy/demo-workspace";
+import { existsSync } from "fs";
+import { stat } from "fs/promises";
 
 describe("Docker Child Process", () => {
     it("should create instance of docker", async () => {
@@ -90,6 +93,53 @@ describe("Docker Child Process", () => {
             );
 
             expect(outputs).toEqual({ hi: "cool!" });
+        });
+    });
+
+    describe.only("copy files", () => {
+        const localWorkspace = demoWorkspace({
+            workspaceName: "copy_files_local",
+        });
+        const containerWorkspace = demoWorkspace({
+            workspaceName: "copy_files_container",
+        });
+        const instance = createInterface({
+            cwd: containerWorkspace.cwd,
+        });
+        let files: Record<string, URL>;
+
+        beforeAll(async () => {
+            await instance.init();
+            files = localWorkspace.makeTree({
+                "hi.txt": "hi",
+                "directory/file1.txt": "",
+                "directory/file2.txt": "",
+            });
+        });
+
+        it("should copy the file hi.txt", async () => {
+            await instance.cp(files["hi.txt"], "hi.txt");
+            const remoteFile = new URL("hi.txt", containerWorkspace.cwd);
+
+            expect(existsSync(remoteFile)).toBeTruthy();
+            const statFile = await stat(remoteFile);
+            expect(statFile.isFile()).toBeTruthy();
+        });
+
+        it("should copy the directory", async () => {
+            const directoryLocal = new URL("directory/", localWorkspace.cwd);
+            const directoryRemote = new URL(
+                "directory/",
+                containerWorkspace.cwd
+            );
+
+            await instance.cp(directoryLocal, "directory/");
+
+            const file1 = new URL("file1.txt", directoryRemote);
+            const file2 = new URL("file2.txt", directoryRemote);
+
+            expect(existsSync(file1)).toBeTruthy();
+            expect(existsSync(file2)).toBeTruthy();
         });
     });
 });
