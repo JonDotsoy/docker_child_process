@@ -133,6 +133,7 @@ export class Instance {
     readonly buildOptions: CreateRunOptions["build"];
     private image: string;
     private readonly abort: CreateRunOptions["abort"];
+    readonly containerWorkspace: URL;
 
     constructor(
         defaultShell: CreateRunOptions["defaultShell"],
@@ -147,6 +148,7 @@ export class Instance {
         this.buildOptions = build;
         this.image = imagen ?? "ubuntu:latest";
         this.abort = abort;
+        this.containerWorkspace = new URL("file:///workspace/");
 
         process.once("SIGINT", () => this.kill());
         process.once("SIGQUIT", () => this.kill());
@@ -228,9 +230,14 @@ export class Instance {
         await docker(
             [
                 `run`,
-                ...(cwd ? [`-v`, `${cwd.pathname}:/workspace`] : []),
+                ...(cwd
+                    ? [
+                          `-v`,
+                          `${cwd.pathname}:${this.containerWorkspace.pathname}`,
+                      ]
+                    : []),
                 "-w",
-                `/workspace`,
+                `${this.containerWorkspace.pathname}`,
                 `--rm`,
                 `-d`,
                 `--name`,
@@ -266,6 +273,18 @@ export class Instance {
             );
         }
         return activity;
+    }
+
+    async cp(from: URL, relativeToWorkspace: string) {
+        const endDestination = new URL(
+            relativeToWorkspace,
+            this.containerWorkspace
+        );
+        await docker([
+            "cp",
+            from.pathname,
+            `${this.uid}:${endDestination.pathname}`,
+        ]).wait();
     }
 
     async stop() {
