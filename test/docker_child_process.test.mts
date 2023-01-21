@@ -96,7 +96,7 @@ describe("Docker Child Process", () => {
         });
     });
 
-    describe.only("copy files", () => {
+    describe("copy files", () => {
         const localWorkspace = demoWorkspace({
             workspaceName: "copy_files_local",
         });
@@ -115,6 +115,10 @@ describe("Docker Child Process", () => {
                 "directory/file1.txt": "",
                 "directory/file2.txt": "",
             });
+        });
+
+        afterAll(() => {
+            instance.kill();
         });
 
         it("should copy the file hi.txt", async () => {
