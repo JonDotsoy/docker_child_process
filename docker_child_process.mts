@@ -19,6 +19,7 @@ export interface ChildProcessOptions {
 
 export interface CreateRunOptions {
     defaultShell?: string;
+    /** @deprecated */
     nameWorkspace?: string;
     imagen?: string;
     build?: {
@@ -125,17 +126,39 @@ const resolveURL = (likeURL: string | URL): URL => {
     return likeURL;
 };
 
-export const createInterface = (createRunOptions?: CreateRunOptions) => {
-    const outs: { output: Record<string, any>; logs: string[] }[] = [];
-    const defaultShell = createRunOptions?.defaultShell ?? "bash";
-    const cwd = createRunOptions?.cwd ? resolveURL(createRunOptions.cwd) : null;
-    // const workspace =
-    //     createRunOptions?.workspace ?? new URL(`.`, import.meta.url);
-    const uid = randomUUID();
-    const buildOptions = createRunOptions?.build;
-    let image = createRunOptions?.imagen ?? "ubuntu:latest";
+export class Instance {
+    readonly defaultShell: string;
+    readonly cwd: URL | null;
+    readonly uid: string;
+    readonly buildOptions: CreateRunOptions["build"];
+    private image: string;
+    private readonly abort: CreateRunOptions["abort"];
 
-    const init = async (options?: ChildProcessOptions) => {
+    constructor(
+        defaultShell: CreateRunOptions["defaultShell"],
+        imagen: CreateRunOptions["imagen"],
+        build: CreateRunOptions["build"],
+        cwd: CreateRunOptions["cwd"],
+        abort: CreateRunOptions["abort"]
+    ) {
+        this.defaultShell = defaultShell ?? "bash";
+        this.cwd = cwd ? resolveURL(cwd) : null;
+        this.uid = randomUUID();
+        this.buildOptions = build;
+        this.image = imagen ?? "ubuntu:latest";
+        this.abort = abort;
+
+        process.once("SIGINT", () => this.kill());
+        process.once("SIGQUIT", () => this.kill());
+        process.once("SIGTERM", () => this.kill());
+        abort?.signal.addEventListener("abort", (e) => {
+            this.kill();
+        });
+    }
+
+    async init(options?: ChildProcessOptions) {
+        const { defaultShell, cwd, uid, buildOptions, abort } = this;
+
         if (buildOptions) {
             const buildArgs = Object.entries(buildOptions.args ?? {})
                 .map(([key, value]) => [`--build-arg`, `${key}=${value}`])
@@ -156,13 +179,16 @@ export const createInterface = (createRunOptions?: CreateRunOptions) => {
                 ""
             );
 
-            image =
+            this.image =
                 buildOptions?.imageName ??
                 `${"docker-child-process"}-${dockerfileHashHex}`;
 
             const dockerfileHashFile =
                 buildOptions.hashFile ??
-                new URL(`${dockerfile.pathname}.${image}.hash`, dockerfile);
+                new URL(
+                    `${dockerfile.pathname}.${this.image}.hash`,
+                    dockerfile
+                );
 
             const alreadyBuilt = existsSync(dockerfileHashFile);
 
@@ -175,7 +201,7 @@ export const createInterface = (createRunOptions?: CreateRunOptions) => {
                         `build`,
                         ...buildArgs,
                         `-t`,
-                        image,
+                        this.image,
                         `-f`,
                         dockerfile.pathname,
                         cwd.pathname,
@@ -190,7 +216,7 @@ export const createInterface = (createRunOptions?: CreateRunOptions) => {
                             hash: dockerfileHashHex,
                             createdAt: new Date(),
                             args: buildOptions.args,
-                            image,
+                            image: this.image,
                         },
                         null,
                         2
@@ -209,7 +235,7 @@ export const createInterface = (createRunOptions?: CreateRunOptions) => {
                 `-d`,
                 `--name`,
                 uid,
-                image,
+                this.image,
                 defaultShell,
                 "-i",
                 `-c`,
@@ -217,16 +243,17 @@ export const createInterface = (createRunOptions?: CreateRunOptions) => {
             ],
             options
         ).wait();
-    };
+    }
 
-    const commit = (imageName: string, options?: ChildProcessOptions) =>
-        docker([`commit`, uid, imageName], options).wait();
+    commit(imageName: string, options?: ChildProcessOptions) {
+        return docker([`commit`, this.uid, imageName], options).wait();
+    }
 
-    const exec = async (cmd: string, options?: ChildProcessOptions) => {
+    async exec(cmd: string, options?: ChildProcessOptions) {
         const evaluateExitCode =
             options?.evaluateExitCode ??
             ((exitCode: number | null) => exitCode !== null && exitCode !== 0);
-        const args = [`exec`, uid, defaultShell, "-i", "-c", cmd];
+        const args = [`exec`, this.uid, this.defaultShell, "-i", "-c", cmd];
 
         console.log(`### RUN =>`, cmd);
 
@@ -239,22 +266,22 @@ export const createInterface = (createRunOptions?: CreateRunOptions) => {
             );
         }
         return activity;
-    };
+    }
 
-    const stop = async () => {
-        await docker(["stop", uid]).wait();
-    };
+    async stop() {
+        await docker(["stop", this.uid]).wait();
+    }
 
-    const kill = () => {
-        dockerSync(["kill", uid]);
-    };
+    kill() {
+        dockerSync(["kill", this.uid]);
+    }
+}
 
-    process.once("SIGINT", () => kill());
-    process.once("SIGQUIT", () => kill());
-    process.once("SIGTERM", () => kill());
-    createRunOptions?.abort?.signal.addEventListener("abort", (e) => {
-        kill();
-    });
-
-    return { uid, commit, init, stop, kill, exec };
-};
+export const createInterface = (createRunOptions?: CreateRunOptions) =>
+    new Instance(
+        createRunOptions?.defaultShell,
+        createRunOptions?.imagen,
+        createRunOptions?.build,
+        createRunOptions?.cwd,
+        createRunOptions?.abort
+    );
