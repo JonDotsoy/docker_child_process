@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/JonDotsoy/docker_child_process/compare/v1.2.1...v1.3.0) (2023-01-21)
+
+
+### Features
+
+* function to copy files into a container ([#11](https://github.com/JonDotsoy/docker_child_process/issues/11)) ([3210dab](https://github.com/JonDotsoy/docker_child_process/commit/3210dab17f63197ea0ee46d6e8aef98556805fdf))
+
+
+### Bug Fixes
+
+* update test to remove container after your use ([34b6e5b](https://github.com/JonDotsoy/docker_child_process/commit/34b6e5b32a45395d463d5fd671f44ab8f3703582))
+
 ## [1.2.1](https://github.com/JonDotsoy/docker_child_process/compare/v1.2.0...v1.2.1) (2023-01-05)
 
 
